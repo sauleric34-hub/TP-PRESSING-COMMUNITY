@@ -1,5 +1,6 @@
 package com.pressing.gestion_pressing.config;
 
+import com.pressing.gestion_pressing.security.AuthEntryPointJwt;
 import com.pressing.gestion_pressing.security.JwtAuthorizationFilter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class SecurityConfig {
 
     @Autowired
     UserDetailsService userDetailsService;
+
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
     public JwtAuthorizationFilter authenticationJwtTokenFilter() {
@@ -53,6 +57,7 @@ public class SecurityConfig {
         http.securityMatcher("/api/**")
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/api/auth/**").permitAll()
                     .anyRequest().authenticated()

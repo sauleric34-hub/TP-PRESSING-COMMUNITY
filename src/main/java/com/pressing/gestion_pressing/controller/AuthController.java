@@ -37,7 +37,7 @@ public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @ModelAttribute LoginRequest loginRequest) {
         logger.info("Tentative de connexion pour l'utilisateur: {}", loginRequest.getEmail());
 
         Authentication authentication = authenticationManager.authenticate(
@@ -60,7 +60,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UtilisateurDTO signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @ModelAttribute UtilisateurDTO signUpRequest) {
         logger.info("Tentative d'inscription pour l'utilisateur: {}", signUpRequest.getEmail());
         UtilisateurDTO result = gestionPressingService.ajouterUtilisateur(signUpRequest);
         logger.info("Utilisateur inscrit avec succès: {}", signUpRequest.getEmail());

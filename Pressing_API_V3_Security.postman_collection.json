@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "c57f492d-900e-4d57-9764-e7208a1961d7",
 		"name": "Pressing API v6.0 (SECURE + JWT + FILTERS)",
-		"description": "Collection Sécurisée avec JWT, Spring Security et BCrypt. Port: 9999.",
+		"description": "Collection Sécurisée avec JWT, Spring Security et BCrypt. Port: 8081.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -30,21 +30,27 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@pressing.com\",\n    \"password\": \"Admin123!\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@pressing.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Admin123!",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "http://localhost:9999/api/auth/signin",
+							"raw": "http://localhost:8081/api/auth/signin",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "9999",
+							"port": "8081",
 							"path": [
 								"api",
 								"auth",
@@ -60,21 +66,37 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nom\": \"Evaris Fomekong\",\n    \"email\": \"evaris.fomekong@keyce.com\",\n    \"telephone\": \"+237699999999\",\n    \"motDePasse\": \"User123!\",\n    \"roles\": [\"ROLE_USER\"]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nom",
+									"value": "Evaris Fomekong",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "evaris.fomekong@keyce.com",
+									"type": "text"
+								},
+								{
+									"key": "telephone",
+									"value": "+237680818081",
+									"type": "text"
+								},
+								{
+									"key": "motDePasse",
+									"value": "User123!",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "http://localhost:9999/api/auth/signup",
+							"raw": "http://localhost:8081/api/auth/signup",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "9999",
+							"port": "8081",
 							"path": [
 								"api",
 								"auth",
@@ -95,12 +117,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9999/api/v1/utilisateurs/all",
+							"raw": "http://localhost:8081/api/v1/utilisateurs/all",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "9999",
+							"port": "8081",
 							"path": [
 								"api",
 								"v1",
@@ -117,12 +139,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9999/api/v1/utilisateurs?couleur=Bleu",
+							"raw": "http://localhost:8081/api/v1/utilisateurs?couleur=Bleu",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "9999",
+							"port": "8081",
 							"path": [
 								"api",
 								"v1",
@@ -144,12 +166,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9999/api/v1/utilisateurs?categorie=Haut",
+							"raw": "http://localhost:8081/api/v1/utilisateurs?categorie=Haut",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "9999",
+							"port": "8081",
 							"path": [
 								"api",
 								"v1",
@@ -171,26 +193,47 @@
 			"name": "Commandes",
 			"item": [
 				{
-					"name": "Créer Commande (JSON)",
+					"name": "Créer Commande (x-www)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"typeService\": \"EXPRESS\",\n    \"vetements\": [\n        {\n            \"nom\": \"Veste de luxe\",\n            \"categorie\": \"Haut\",\n            \"couleur\": \"Bleu\",\n            \"prixUnitaire\": 5000.0\n        }\n    ]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "typeService",
+									"value": "EXPRESS",
+									"type": "text"
+								},
+								{
+									"key": "vetements[0].nom",
+									"value": "Veste de luxe",
+									"type": "text"
+								},
+								{
+									"key": "vetements[0].categorie",
+									"value": "Haut",
+									"type": "text"
+								},
+								{
+									"key": "vetements[0].couleur",
+									"value": "Bleu",
+									"type": "text"
+								},
+								{
+									"key": "vetements[0].prixUnitaire",
+									"value": "5000.0",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "http://localhost:9999/api/v1/utilisateurs/1/commandes",
+							"raw": "http://localhost:8081/api/v1/utilisateurs/1/commandes",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "9999",
+							"port": "8081",
 							"path": [
 								"api",
 								"v1",
@@ -248,12 +291,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9999/api/v1/commandes",
+							"raw": "http://localhost:8081/api/v1/commandes",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "9999",
+							"port": "8081",
 							"path": [
 								"api",
 								"v1",

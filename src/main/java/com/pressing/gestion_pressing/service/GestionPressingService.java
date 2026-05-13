@@ -201,11 +201,11 @@ public class GestionPressingService {
                 if (v.getImageUrl() == null || v.getImageUrl().isEmpty()) {
                     String couleur = (v.getCouleur() != null) ? v.getCouleur().toLowerCase() : "";
                     if (couleur.contains("bleu")) {
-                        v.setImageUrl("http://localhost:9999/image/tshirt_bleu.png");
+                        v.setImageUrl("http://localhost:8081/image/tshirt_bleu.png");
                     } else if (couleur.contains("blanc")) {
-                        v.setImageUrl("http://localhost:9999/image/tshirt_blanc.webp");
+                        v.setImageUrl("http://localhost:8081/image/tshirt_blanc.webp");
                     } else if (couleur.contains("gris")) {
-                        v.setImageUrl("http://localhost:9999/image/tshirt_gris.webp");
+                        v.setImageUrl("http://localhost:8081/image/tshirt_gris.webp");
                     } else {
                         v.setImageUrl("https://picsum.photos/seed/" + v.getNom().hashCode() + "/200");
                     }
@@ -223,7 +223,7 @@ public class GestionPressingService {
                             java.nio.file.Files.createDirectories(path.getParent());
                             java.nio.file.Files.write(path, vDto.getImageFile().getBytes());
                             if (commande.getVetements().size() > index) {
-                                commande.getVetements().get(index).setImageUrl("http://localhost:9999/uploads/" + fileName);
+                                commande.getVetements().get(index).setImageUrl("http://localhost:8081/uploads/" + fileName);
                             }
                         } catch (java.io.IOException e) {
                             System.err.println("Erreur upload image : " + e.getMessage());

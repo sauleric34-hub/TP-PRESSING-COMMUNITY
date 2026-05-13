@@ -1,5 +1,5 @@
 @echo off
-set PORT=9999
+set PORT=8081
 echo Nettoyage radical des processus Java existants...
 taskkill /F /IM java.exe /T 2>nul
 echo Demarrage de l'application Spring Boot sur le port %PORT%...
