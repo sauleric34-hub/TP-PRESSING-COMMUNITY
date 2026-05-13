@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Facture / Invoice</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; color: #333; margin: 0; padding: 20px; }
+        .header { border-bottom: 2px solid #1a73e8; padding-bottom: 20px; margin-bottom: 20px; }
+        .company-name { font-size: 24px; color: #1a73e8; font-weight: bold; }
+        .invoice-title { font-size: 20px; text-align: right; color: #555; }
+        .details-container { display: table; width: 100%; margin-bottom: 30px; }
+        .details-box { display: table-cell; width: 50%; vertical-align: top; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .table th { background-color: #f8f9fa; border-bottom: 2px solid #ddd; padding: 10px; text-align: left; }
+        .table td { border-bottom: 1px solid #eee; padding: 10px; }
+        .total { text-align: right; font-size: 18px; font-weight: bold; margin-top: 20px; color: #1a73e8; }
+        .signature-section { margin-top: 50px; border-top: 1px dashed #ccc; padding-top: 20px; text-align: center; }
+        .signature-seal { 
+            display: inline-block; 
+            border: 3px double #d93025; 
+            color: #d93025; 
+            padding: 10px; 
+            border-radius: 10px; 
+            transform: rotate(-5deg); 
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .lang-fr { font-weight: bold; }
+        .lang-en { font-style: italic; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <table style="width: 100%;">
+            <tr>
+                <td style="vertical-align: middle;">
+                    <img th:if="${logoBase64 != null}" th:src="${logoBase64}" width="50" height="50" style="border-radius: 50%; border: 2px solid #1a73e8; margin-right: 10px; vertical-align: middle;" />
+                    <div style="display: inline-block; vertical-align: middle;">
+                        <div class="company-name">PRESSING COMMUNITY</div>
+                        <div>Douala / Yaoundé, Cameroun</div>
+                    </div>
+                </td>
+                <td style="text-align: right;">
+                    <div class="invoice-title">
+                        <span class="lang-fr">FACTURE</span> / <span class="lang-en">INVOICE</span><br />
+                        #[[${commande.id}]]
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="details-container">
+        <div class="details-box">
+            <h3 class="lang-fr">Client :</h3>
+            <h3 class="lang-en">Customer :</h3>
+            <p>
+                <strong th:text="${commande.nomUtilisateur != null ? commande.nomUtilisateur : 'Client'}"></strong><br />
+                <span th:text="${commande.telephoneUtilisateur != null ? commande.telephoneUtilisateur : ''}"></span><br />
+                <span th:text="${commande.utilisateurEmail != null ? commande.utilisateurEmail : ''}"></span>
+            </p>
+        </div>
+        <div class="details-box" style="text-align: right;">
+            <p>
+                <span class="lang-fr">Date de commande :</span> / <span class="lang-en">Order Date :</span><br />
+                <span th:text="${#temporals.format(commande.dateCreation, 'dd/MM/yyyy HH:mm')}"></span>
+            </p>
+            <p>
+                <span class="lang-fr">Retrait prévu :</span> / <span class="lang-en">Estimated Pickup :</span><br />
+                <strong style="color: #d93025;" th:text="${#temporals.format(commande.dateRetraitPrevue, 'dd/MM/yyyy HH:mm')}"></strong>
+            </p>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th><span class="lang-fr">Aperçu</span> / <span class="lang-en">Image</span></th>
+                <th><span class="lang-fr">Article</span> / <span class="lang-en">Item</span></th>
+                <th><span class="lang-fr">Couleur</span> / <span class="lang-en">Color</span></th>
+                <th style="text-align: right;"><span class="lang-fr">Prix</span> / <span class="lang-en">Price</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="v : ${commande.vetements}">
+                <td>
+                    <img th:if="${v.imageUrl != null}" th:src="${v.imageUrl}" width="60" height="60" style="object-fit: cover; border-radius: 4px;" />
+                </td>
+                <td th:text="${v.nom}"></td>
+                <td th:text="${v.couleur}"></td>
+                <td style="text-align: right;" th:text="${#numbers.formatDecimal(v.prixUnitaire, 0, 0)} + ' FCFA'"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="total">
+        <span class="lang-fr">TOTAL À PAYER :</span> / <span class="lang-en">TOTAL TO PAY :</span><br />
+        <span th:text="${#numbers.formatDecimal(commande.prixTotal, 0, 0)} + ' FCFA'"></span>
+    </div>
+
+    <div class="signature-section">
+        <p class="lang-fr">Service : <span th:text="${commande.typeService}"></span></p>
+        <p class="lang-en">Service Type : <span th:text="${commande.typeService}"></span></p>
+        
+        <div class="signature-seal">
+            CERTIFIÉ CONFORME / CERTIFIED<br />
+            DIGITAL SIGNATURE<br />
+            <span style="font-family: monospace; font-size: 0.8em;" th:text="${signatureHash}"></span>
+        </div>
+        
+        <p style="margin-top: 20px; font-size: 0.8em; color: #999;">
+            Merci pour votre confiance ! / Thank you for your business!
+        </p>
+    </div>
+</body>
+</html>

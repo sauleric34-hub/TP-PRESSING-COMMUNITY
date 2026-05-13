@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{dashboard.title}">Pressing Community - Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f1117;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: linear-gradient(135deg, #1a1d2e 0%, #16213e 100%);
+            border-bottom: 1px solid rgba(99,102,241,0.3);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .navbar-brand img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #6366f1;
+        }
+        .navbar-brand span {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 0.5rem; }
+        .nav-link {
+            padding: 8px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(99,102,241,0.15);
+            color: #6366f1;
+        }
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+        .user-badge {
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        /* MAIN CONTENT */
+        .main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+
+        /* STATS CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #1e2130 0%, #1a1d2e 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); border-color: rgba(99,102,241,0.5); }
+        .stat-label { font-size: 0.8rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 2rem; font-weight: 700; margin-top: 0.5rem; }
+        .stat-value.blue { color: #6366f1; }
+        .stat-value.green { color: #22c55e; }
+        .stat-value.amber { color: #f59e0b; }
+        .stat-value.red { color: #ef4444; }
+
+        /* PAGE HEADER */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-title { font-size: 1.5rem; font-weight: 700; }
+        .search-bar {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-bar input {
+            background: #1e2130;
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            width: 250px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-bar input:focus { border-color: #6366f1; }
+        .search-bar input::placeholder { color: #475569; }
+
+        /* BUTTONS */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+        .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+        .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .btn-success:hover { opacity: 0.85; }
+        .btn-danger { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+        .btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+
+        /* COMMANDE CARDS GRID */
+        .commandes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.2rem;
+        }
+        .commande-card {
+            background: #1e2130;
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .commande-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99,102,241,0.15);
+        }
+        .commande-card.retired { opacity: 0.55; border-color: rgba(34,197,94,0.2); }
+
+        .card-header {
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .card-id { font-weight: 700; font-size: 1.1rem; color: #6366f1; }
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-express { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .badge-rapide { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .badge-normal { background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
+        .badge-retire { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+
+        .card-body { padding: 1rem 1.2rem; }
+        .client-name { font-weight: 600; font-size: 1rem; color: #e2e8f0; margin-bottom: 0.3rem; }
+        .info-row { display: flex; justify-content: space-between; font-size: 0.82rem; color: #64748b; margin-bottom: 0.2rem; }
+        .info-row span:last-child { color: #94a3b8; }
+
+        /* VETEMENTS IMAGES IN CARD */
+        .vetements-preview {
+            display: flex;
+            gap: 6px;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .vetement-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid rgba(99,102,241,0.3);
+        }
+
+        .card-footer {
+            padding: 0.8rem 1.2rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .prix-total { font-weight: 700; color: #6366f1; font-size: 1.1rem; }
+
+        /* ALERTS */
+        .alert {
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .alert-success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
+        .alert-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+
+        /* PAGINATION */
+        .pagination { display: flex; gap: 0.5rem; justify-content: center; margin-top: 2rem; }
+        .pagination a {
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #94a3b8;
+            background: #1e2130;
+            border: 1px solid rgba(99,102,241,0.2);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .pagination a:hover, .pagination a.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #475569;
+        }
+        .empty-state .icon { font-size: 4rem; margin-bottom: 1rem; }
+        .empty-state p { font-size: 1.1rem; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a class="navbar-brand" href="/web/dashboard">
+        <img src="/image/logo-pressing.webp" alt="Logo Pressing">
+        <span>Pressing Community</span>
+    </a>
+    <div class="nav-links" style="align-items: center;">
+        <a href="/web/dashboard" class="nav-link active" th:text="#{nav.dashboard}">🏠 Dashboard</a>
+        <a href="/web/utilisateurs" class="nav-link" th:text="#{nav.clients}" sec:authorize="hasRole('ADMIN')">👥 Clients</a>
+        
+        <div class="user-info" style="display: flex; align-items: center; gap: 10px; margin-left: 1rem;">
+            <span class="user-badge" sec:authentication="name">User</span>
+            <form th:action="@{/web/logout}" method="post" style="display: inline;">
+                <button type="submit" class="btn-logout">🚪 Se déconnecter</button>
+            </form>
+        </div>
+
+        <!-- Language Switcher -->
+        <div style="display: flex; gap: 5px; margin-left: 1rem; align-items: center; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1rem;">
+            <a href="?lang=fr" class="nav-link" style="padding: 4px 8px; font-size: 0.8rem;" th:styleappend="${#locale.language == 'fr'} ? 'color: #6366f1; background: rgba(99,102,241,0.1);' : ''">FR</a>
+            <a href="?lang=en" class="nav-link" style="padding: 4px 8px; font-size: 0.8rem;" th:styleappend="${#locale.language == 'en'} ? 'color: #6366f1; background: rgba(99,102,241,0.1);' : ''">EN</a>
+        </div>
+    </div>
+</nav>
+
+<div class="main">
+
+    <!-- ALERTS -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <!-- STATS (Admin only) -->
+    <div class="stats-grid" sec:authorize="hasRole('ADMIN')">
+        <div class="stat-card">
+            <div class="stat-label" th:text="#{dashboard.stat.total}">Total Commandes</div>
+            <div class="stat-value blue" th:text="${commandes.totalItems}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label" th:text="#{dashboard.stat.clients}">Clients Enregistrés</div>
+            <div class="stat-value green" th:text="${utilisateurs.size()}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label" th:text="#{dashboard.stat.pending}">En Attente</div>
+            <div class="stat-value amber"
+                 th:text="${commandes.content != null ? #lists.size(commandes.content.?[!estRetire]) : 0}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label" th:text="#{dashboard.stat.retired}">Retirées</div>
+            <div class="stat-value green"
+                 th:text="${commandes.content != null ? #lists.size(commandes.content.?[estRetire]) : 0}">0</div>
+        </div>
+    </div>
+
+    <!-- WELCOME FOR CLIENTS -->
+    <div class="page-header" sec:authorize="hasRole('USER')">
+        <h1 class="page-title">👋 Bienvenue sur votre espace pressing</h1>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1 class="page-title" th:text="#{dashboard.header}">📋 Tableau de Bord des Commandes</h1>
+        <form method="get" action="/web/dashboard" class="search-bar">
+            <input type="text" name="recherche" th:placeholder="#{dashboard.search.placeholder}" th:value="${recherche}">
+            <button type="submit" class="btn btn-primary" th:text="#{dashboard.search.button}">Rechercher</button>
+            <a href="/web/dashboard" class="btn btn-danger">✕</a>
+        </form>
+    </div>
+
+    <!-- COMMANDES GRID -->
+    <div class="commandes-grid" th:if="${not #lists.isEmpty(commandes.content)}">
+        <div class="commande-card" th:each="commande : ${commandes.content}"
+             th:classappend="${commande.estRetire} ? 'retired' : ''">
+
+            <div class="card-header">
+                <span class="card-id" th:text="'#' + ${commande.id}">ID</span>
+                <div style="display:flex; gap:6px;">
+                    <span class="badge badge-retire" th:if="${commande.estRetire}" th:text="#{commande.status.retired}">✓ Retiré</span>
+                    <span class="badge"
+                          th:classappend="${commande.typeService == 'EXPRESS'} ? 'badge-express' : (${commande.typeService == 'RAPIDE'} ? 'badge-rapide' : 'badge-normal')"
+                          th:text="${commande.typeService}">SERVICE</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="client-name" th:text="${commande.nomUtilisateur}">Client</div>
+                <div class="info-row" style="margin-bottom:0.5rem; color:#6366f1; font-weight:500;">
+                    <span th:text="${commande.telephoneUtilisateur}">Tel</span>
+                </div>
+                <div class="info-row">
+                    <span th:text="#{commande.date.creation}">Date création :</span>
+                    <span th:text="${#temporals.format(commande.dateCreation, 'dd/MM/yyyy HH:mm')}">Date</span>
+                </div>
+                <div class="info-row">
+                    <span th:text="#{commande.date.retrait.prevu}">Retrait prévu :</span>
+                    <span style="color:#f59e0b;" th:text="${#temporals.format(commande.dateRetraitPrevue, 'dd/MM/yyyy HH:mm')}">Date</span>
+                </div>
+                <div class="info-row" th:if="${commande.estRetire and commande.dateRetraitEffective != null}">
+                    <span th:text="#{commande.date.retrait.effective}">Retiré le :</span>
+                    <span style="color:#22c55e;" th:text="${#temporals.format(commande.dateRetraitEffective, 'dd/MM/yyyy HH:mm')}">Date</span>
+                </div>
+                <div class="info-row">
+                    <span th:text="#{commande.articles.count}">Nombre d'articles :</span>
+                    <span th:text="${commande.vetements != null ? commande.vetements.size() : 0}">0</span>
+                </div>
+
+                <!-- PHOTOS DES VETEMENTS -->
+                <div class="vetements-preview" th:if="${commande.vetements != null}">
+                    <img class="vetement-img"
+                         th:each="v : ${commande.vetements}"
+                         th:src="${v.imageUrl != null ? v.imageUrl : 'https://picsum.photos/seed/default/48'}"
+                         th:title="${v.nom + ' - ' + v.couleur}"
+                         onerror="this.src='https://picsum.photos/seed/default/48'">
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <span class="prix-total" th:text="${#numbers.formatDecimal(commande.prixTotal, 0, 0) + ' FCFA'}">Prix</span>
+                <div style="display:flex; gap:5px;">
+                    <a th:href="'/web/commandes/' + ${commande.id} + '/facture'" class="btn btn-outline btn-sm" title="PDF">📄 PDF</a>
+                    <a th:if="${!commande.estRetire}"
+                       th:href="'/web/commandes/' + ${commande.id} + '/retrait'"
+                       class="btn btn-success btn-sm"
+                       th:onclick="'return confirm(\'' + #{commande.confirm.retrait} + '\')'"
+                       th:text="#{commande.action.mark.retired}">
+                        ✓ Marquer Retiré
+                    </a>
+                </div>
+                <span th:if="${commande.estRetire}" style="color:#4ade80; font-size:0.85rem; font-weight:600;" th:text="#{commande.status.delivered}">✅ Livré</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" th:if="${#lists.isEmpty(commandes.content)}">
+        <div class="icon">📭</div>
+        <p th:text="#{dashboard.empty}">Aucune commande trouvée.</p>
+        <a href="/web/utilisateurs" class="btn btn-primary" th:text="#{dashboard.empty.action}">Aller créer une commande</a>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination" th:if="${commandes.totalPages > 1}">
+        <a th:href="'/web/dashboard?page=' + ${page - 1}" th:if="${page > 0}" th:text="#{pagination.prev}">← Précédent</a>
+        <a th:each="i : ${#numbers.sequence(0, commandes.totalPages - 1)}"
+           th:href="'/web/dashboard?page=' + ${i}"
+           th:text="${i + 1}"
+           th:classappend="${i == page} ? 'active' : ''">1</a>
+        <a th:href="'/web/dashboard?page=' + ${page + 1}" th:if="${page < commandes.totalPages - 1}" th:text="#{pagination.next}">Suivant →</a>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{clients.title}">Pressing Community - Clients</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:#0f1117; color:#e2e8f0; min-height:100vh; }
+        .navbar { background:linear-gradient(135deg,#1a1d2e,#16213e); border-bottom:1px solid rgba(99,102,241,0.3); padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:70px; position:sticky; top:0; z-index:100; }
+        .navbar-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+        .navbar-brand img { width:45px; height:45px; border-radius:50%; border:2px solid #6366f1; }
+        .navbar-brand span { font-size:1.3rem; font-weight:700; background:linear-gradient(135deg,#6366f1,#8b5cf6); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+        .nav-links { display:flex; gap:0.5rem; }
+        .nav-link { padding:8px 18px; border-radius:8px; text-decoration:none; color:#94a3b8; font-weight:500; font-size:0.9rem; transition:all 0.2s; }
+        .nav-link:hover,.nav-link.active { background:rgba(99,102,241,0.15); color:#6366f1; }
+        .main { padding:2rem; max-width:1400px; margin:0 auto; }
+        .layout { display:grid; grid-template-columns:360px 1fr; gap:2rem; align-items:start; }
+        .form-card { background:#1e2130; border:1px solid rgba(99,102,241,0.2); border-radius:16px; overflow:hidden; position:sticky; top:90px; }
+        .form-header { background:linear-gradient(135deg,#6366f1,#8b5cf6); padding:1.5rem; }
+        .form-header h2 { font-size:1.1rem; font-weight:700; }
+        .form-header p { font-size:0.82rem; opacity:0.8; margin-top:4px; }
+        .form-body { padding:1.5rem; }
+        .form-group { margin-bottom:1.2rem; }
+        label { display:block; font-size:0.8rem; font-weight:600; color:#94a3b8; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.5px; }
+        input { width:100%; background:#0f1117; border:1px solid rgba(99,102,241,0.3); border-radius:8px; padding:10px 14px; color:#e2e8f0; font-size:0.9rem; outline:none; font-family:'Inter',sans-serif; transition:border-color 0.2s; }
+        input:focus { border-color:#6366f1; }
+        input::placeholder { color:#475569; }
+        .field-error { color:#f87171; font-size:0.78rem; margin-top:4px; }
+        .btn { padding:10px 18px; border-radius:8px; border:none; cursor:pointer; font-size:0.85rem; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:5px; transition:all 0.2s; }
+        .btn-primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; width:100%; justify-content:center; }
+        .btn-primary:hover { opacity:0.85; }
+        .btn-success { background:linear-gradient(135deg,#22c55e,#16a34a); color:white; padding:6px 12px; font-size:0.8rem; }
+        .btn-danger { background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:6px 12px; font-size:0.8rem; }
+        .btn-danger:hover { background:rgba(239,68,68,0.2); }
+        .table-card { background:#1e2130; border:1px solid rgba(99,102,241,0.15); border-radius:16px; overflow:hidden; }
+        .table-head { padding:1.2rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; }
+        .table-head h2 { font-size:1.1rem; font-weight:700; }
+        .badge-count { background:rgba(99,102,241,0.15); color:#818cf8; padding:3px 12px; border-radius:20px; font-size:0.8rem; }
+        table { width:100%; border-collapse:collapse; }
+        thead th { padding:12px 16px; text-align:left; font-size:0.75rem; font-weight:700; color:#475569; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.05); }
+        tbody tr { border-bottom:1px solid rgba(255,255,255,0.03); transition:background 0.15s; }
+        tbody tr:hover { background:rgba(99,102,241,0.05); }
+        tbody td { padding:14px 16px; font-size:0.88rem; vertical-align:middle; }
+        .avatar { width:36px; height:36px; background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem; margin-right:10px; vertical-align:middle; }
+        .user-name { font-weight:600; }
+        .user-email { font-size:0.78rem; color:#64748b; margin-top:2px; }
+        .actions { display:flex; gap:8px; }
+        .alert { padding:12px 20px; border-radius:10px; margin-bottom:1.5rem; font-size:0.9rem; font-weight:500; }
+        .alert-success { background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); color:#4ade80; }
+        .alert-error { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#f87171; }
+        .empty-td { text-align:center; padding:3rem; color:#475569; }
+        .pagination { display:flex; gap:0.5rem; justify-content:center; padding:1rem; }
+        .pagination a { padding:6px 12px; border-radius:6px; text-decoration:none; color:#94a3b8; background:#0f1117; border:1px solid rgba(99,102,241,0.2); font-size:0.82rem; transition:all 0.2s; }
+        .pagination a:hover,.pagination a.active { background:#6366f1; color:white; }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <a class="navbar-brand" href="/web/dashboard">
+        <img src="/image/logo-pressing.webp" alt="Logo">
+        <span>Pressing Community</span>
+    </a>
+    <div class="nav-links">
+        <a href="/web/dashboard" class="nav-link" th:text="#{nav.dashboard}">🏠 Dashboard</a>
+        <a href="/web/utilisateurs" class="nav-link active" th:text="#{nav.clients}">👥 Clients</a>
+
+        <!-- Language Switcher -->
+        <div style="display: flex; gap: 5px; margin-left: 1rem; align-items: center; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1rem;">
+            <a href="?lang=fr" class="nav-link" style="padding: 4px 8px; font-size: 0.8rem;" th:styleappend="${#locale.language == 'fr'} ? 'color: #6366f1; background: rgba(99,102,241,0.1);' : ''">FR</a>
+            <a href="?lang=en" class="nav-link" style="padding: 4px 8px; font-size: 0.8rem;" th:styleappend="${#locale.language == 'en'} ? 'color: #6366f1; background: rgba(99,102,241,0.1);' : ''">EN</a>
+        </div>
+    </div>
+</nav>
+<div class="main">
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+    <div class="layout">
+        <!-- FORMULAIRE -->
+        <div class="form-card">
+            <div class="form-header">
+                <h2 th:text="#{clients.add.button}">➕ Nouveau Client</h2>
+                <p th:text="#{order.client.info}">Remplissez les informations du client</p>
+            </div>
+            <div class="form-body">
+                <form method="post" action="/web/utilisateurs" th:object="${utilisateurForm}">
+                    <div class="form-group">
+                        <label th:text="#{clients.table.name}">Nom complet</label>
+                        <input type="text" th:field="*{nom}" placeholder="Ex: Jean Dupont">
+                        <div class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{clients.table.email}">Email</label>
+                        <input type="email" th:field="*{email}" placeholder="jean@example.com">
+                        <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{clients.table.phone}">Téléphone (Cameroun)</label>
+                        <input type="text" th:field="*{telephone}" placeholder="+237691234567">
+                        <div class="field-error" th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" th:text="#{clients.add.button}">✓ Enregistrer le client</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-card">
+            <div class="table-head">
+                <h2 th:text="#{clients.header}">👥 Liste des Clients</h2>
+                <div class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
+                    <form method="get" action="/web/utilisateurs" style="display: flex; gap: 10px;">
+                        <input type="text" name="couleur" th:value="${couleur}" placeholder="🎨 Couleur (ex: Bleu)" style="width: 150px; padding: 6px 10px; font-size: 0.8rem;">
+                        <input type="text" name="categorie" th:value="${categorie}" placeholder="🏷️ Catégorie (ex: Robe)" style="width: 150px; padding: 6px 10px; font-size: 0.8rem;">
+                        <button type="submit" class="btn btn-primary" style="width: auto; padding: 6px 12px; font-size: 0.8rem;">🔍</button>
+                        <a href="/web/utilisateurs" class="btn btn-danger" style="width: auto; padding: 6px 12px; font-size: 0.8rem;" th:if="${(couleur != null && !couleur.isEmpty()) || (categorie != null && !categorie.isEmpty())}">✕</a>
+                    </form>
+                </div>
+                <span class="badge-count" th:text="${utilisateurs.totalItems} + ' ' + #{nav.clients}"></span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th th:text="#{clients.table.id}">#</th>
+                        <th th:text="#{nav.clients}">Client</th>
+                        <th th:text="#{clients.table.phone}">Téléphone</th>
+                        <th th:text="#{clients.table.actions}">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="u : ${utilisateurs.content}">
+                        <td style="color:#6366f1;font-weight:700;" th:text="'#' + ${u.id}"></td>
+                        <td>
+                            <span class="avatar" th:text="${#strings.substring(u.nom,0,1).toUpperCase()}"></span>
+                            <span style="display:inline-block;vertical-align:middle;">
+                                <div class="user-name" th:text="${u.nom}"></div>
+                                <div class="user-email" th:text="${u.email}"></div>
+                            </span>
+                        </td>
+                        <td style="color:#94a3b8;" th:text="${u.telephone}"></td>
+                        <td>
+                            <div class="actions">
+                                <a class="btn btn-success" th:href="'/web/utilisateurs/' + ${u.id} + '/commander'" th:text="#{clients.action.order}">📦 Commander</a>
+                                <a class="btn btn-danger"
+                                   th:href="'/web/utilisateurs/' + ${u.id} + '/supprimer'"
+                                   th:onclick="'return confirm(\'' + #{clients.confirm.delete} + '\')'">🗑</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(utilisateurs.content)}">
+                        <td colspan="4" class="empty-td" th:text="#{clients.empty}">Aucun client. Ajoutez votre premier client !</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination" th:if="${utilisateurs.totalPages > 1}">
+                <a th:href="'/web/utilisateurs?page=' + ${page-1}" th:if="${page > 0}" th:text="#{pagination.prev}">← Préc.</a>
+                <a th:each="i : ${#numbers.sequence(0, utilisateurs.totalPages - 1)}"
+                   th:href="'/web/utilisateurs?page=' + ${i}"
+                   th:text="${i+1}"
+                   th:classappend="${i == page} ? 'active' : ''"></a>
+                <a th:href="'/web/utilisateurs?page=' + ${page+1}" th:if="${page < utilisateurs.totalPages - 1}" th:text="#{pagination.next}">Suiv. →</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

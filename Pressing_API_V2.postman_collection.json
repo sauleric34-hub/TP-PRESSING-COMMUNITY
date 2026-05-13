@@ -1,0 +1,328 @@
+{
+	"info": {
+		"_postman_id": "b46f381b-05b4-4398-82d8-c9524277ea6e",
+		"name": "Pressing API v4.0 (COMPLETE + Visual)",
+		"description": "Collection Premium pour le Bachelor 2 - Gestion de Pressing avec SQLite, JPA et DTOs.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Créer Utilisateur (Cameroun)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "nom",
+							"value": "Evaris Fomekong",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "evaris.fomekong@keyce.com",
+							"type": "text"
+						},
+						{
+							"key": "telephone",
+							"value": "699999999",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/utilisateurs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"utilisateurs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Lister les Utilisateurs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/utilisateurs/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"utilisateurs",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Créer Commande EXPRESS (8h)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "typeService",
+							"value": "EXPRESS",
+							"type": "text"
+						},
+						{
+							"key": "vetements[0].nom",
+							"value": "Veste de luxe",
+							"type": "text"
+						},
+						{
+							"key": "vetements[0].categorie",
+							"value": "Haut",
+							"type": "text"
+						},
+						{
+							"key": "vetements[0].couleur",
+							"value": "Bleu",
+							"type": "text"
+						},
+						{
+							"key": "vetements[0].prixUnitaire",
+							"value": "5000.0",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/utilisateurs/1/commandes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"utilisateurs",
+						"1",
+						"commandes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Créer Commande NORMALE (7j)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "typeService",
+							"value": "NORMAL",
+							"type": "text"
+						},
+						{
+							"key": "vetements[0].nom",
+							"value": "T-shirt",
+							"type": "text"
+						},
+						{
+							"key": "vetements[0].categorie",
+							"value": "Haut",
+							"type": "text"
+						},
+						{
+							"key": "vetements[0].couleur",
+							"value": "Blanc",
+							"type": "text"
+						},
+						{
+							"key": "vetements[0].prixUnitaire",
+							"value": "1000.0",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/utilisateurs/1/commandes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"utilisateurs",
+						"1",
+						"commandes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Rechercher (Visualizer)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"    <style>",
+							"        body { background: #1a1a1a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }",
+							"        .card { border: 1px solid #444; border-radius: 8px; padding: 15px; margin: 10px; background: #2a2a2a; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }",
+							"        .header { color: #00d2ff; font-weight: bold; border-bottom: 2px solid #00d2ff; padding-bottom: 5px; }",
+							"        .img-container { text-align: center; margin-top: 10px; }",
+							"        .img-container img { max-width: 150px; border-radius: 5px; }",
+							"        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; margin-left: 5px; }",
+							"        .express { background: #ff416c; }",
+							"        .normal { background: #00d2ff; }",
+							"    </style>",
+							"    <h2>Résultats de la Recherche</h2>",
+							"    {{#each response.content}}",
+							"        <div class='card'>",
+							"            <div class='header'>COMMANDE #{{id}} - {{typeService}}</div>",
+							"            <p>Date Retrait Prévue: {{dateRetraitPrevue}}</p>",
+							"            <p>Prix Total: {{prixTotal}} FCFA</p>",
+							"            <div class='img-container'>",
+							"                {{#each vetements}}",
+							"                    <img src='{{imageUrl}}' alt='{{nom}}' title='{{nom}} ({{couleur}})'>",
+							"                {{/each}}",
+							"            </div>",
+							"        </div>",
+							"    {{/each}}",
+							"`;",
+							"pm.visualizer.set(template, {",
+							"    response: pm.response.json()",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/commandes?recherche=EXPRESS",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"commandes"
+					],
+					"query": [
+						{
+							"key": "recherche",
+							"value": "EXPRESS"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Effectuer un RETRAIT (Livraison)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/commandes/1/retrait",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"commandes",
+						"1",
+						"retrait"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Lister TOUTES les commandes (Visual)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"    <style>",
+							"        body { background: #121212; color: #e0e0e0; font-family: 'Outfit', sans-serif; }",
+							"        .order-row { display: flex; border-bottom: 1px solid #333; padding: 10px; align-items: center; }",
+							"        .id { width: 50px; color: #00d2ff; }",
+							"        .client { flex: 1; font-weight: bold; }",
+							"        .garments { flex: 2; display: flex; gap: 5px; }",
+							"        .garment-img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }",
+							"    </style>",
+							"    <h2>Tableau de Bord des Commandes</h2>",
+							"    <div class='order-row' style='background: #333; font-weight: bold;'>",
+							"        <div class='id'>ID</div>",
+							"        <div class='client'>Service</div>",
+							"        <div class='garments'>Vêtements</div>",
+							"    </div>",
+							"    {{#each response.content}}",
+							"        <div class='order-row'>",
+							"            <div class='id'>#{{id}}</div>",
+							"            <div class='client'>{{typeService}}</div>",
+							"            <div class='garments'>",
+							"                {{#each vetements}}",
+							"                    <img class='garment-img' src='{{imageUrl}}' title='{{nom}}'>",
+							"                {{/each}}",
+							"            </div>",
+							"        </div>",
+							"    {{/each}}",
+							"`;",
+							"pm.visualizer.set(template, {",
+							"    response: pm.response.json()",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/commandes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"commandes"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

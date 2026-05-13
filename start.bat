@@ -1,0 +1,6 @@
+@echo off
+set PORT=9999
+echo Nettoyage radical des processus Java existants...
+taskkill /F /IM java.exe /T 2>nul
+echo Demarrage de l'application Spring Boot sur le port %PORT%...
+call gradlew.bat bootRun --no-daemon

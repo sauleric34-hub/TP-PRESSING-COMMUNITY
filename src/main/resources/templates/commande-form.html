@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{order.title}">Pressing Community - Nouvelle Commande</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:#0f1117; color:#e2e8f0; min-height:100vh; }
+        .navbar { background:linear-gradient(135deg,#1a1d2e,#16213e); border-bottom:1px solid rgba(99,102,241,0.3); padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:70px; position:sticky; top:0; z-index:100; }
+        .navbar-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+        .navbar-brand img { width:45px; height:45px; border-radius:50%; border:2px solid #6366f1; }
+        .navbar-brand span { font-size:1.3rem; font-weight:700; background:linear-gradient(135deg,#6366f1,#8b5cf6); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+        .nav-links { display:flex; gap:0.5rem; }
+        .nav-link { padding:8px 18px; border-radius:8px; text-decoration:none; color:#94a3b8; font-weight:500; font-size:0.9rem; transition:all 0.2s; }
+        .nav-link:hover { background:rgba(99,102,241,0.15); color:#6366f1; }
+        .main { padding:2rem; max-width:900px; margin:0 auto; }
+        .page-header { margin-bottom:2rem; }
+        .page-header h1 { font-size:1.6rem; font-weight:700; }
+        .page-header p { color:#64748b; margin-top:4px; }
+        .card { background:#1e2130; border:1px solid rgba(99,102,241,0.2); border-radius:16px; overflow:hidden; margin-bottom:1.5rem; }
+        .card-header { padding:1.2rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; gap:10px; }
+        .card-header h2 { font-size:1rem; font-weight:700; }
+        .card-body { padding:1.5rem; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .form-group { margin-bottom:1.1rem; }
+        .form-group.full { grid-column:1/-1; }
+        label { display:block; font-size:0.78rem; font-weight:600; color:#94a3b8; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.5px; }
+        input, select, textarea { width:100%; background:#0f1117; border:1px solid rgba(99,102,241,0.3); border-radius:8px; padding:10px 14px; color:#e2e8f0; font-size:0.9rem; outline:none; font-family:'Inter',sans-serif; transition:border-color 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color:#6366f1; }
+        input::placeholder, textarea::placeholder { color:#475569; }
+        select option { background:#1e2130; }
+        .service-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+        .service-card { position:relative; }
+        .service-card input[type=radio] { display:none; }
+        .service-label {
+            display:block; padding:1rem; border-radius:12px;
+            border:2px solid rgba(99,102,241,0.2);
+            cursor:pointer; text-align:center; transition:all 0.2s;
+        }
+        .service-card input[type=radio]:checked + .service-label { border-color:#6366f1; background:rgba(99,102,241,0.1); }
+        .service-label:hover { border-color:rgba(99,102,241,0.5); }
+        .service-icon { font-size:2rem; display:block; margin-bottom:0.5rem; }
+        .service-name { font-weight:700; font-size:0.95rem; }
+        .service-info { font-size:0.75rem; color:#64748b; margin-top:4px; }
+        .service-badge { font-size:0.7rem; padding:2px 8px; border-radius:20px; margin-top:6px; display:inline-block; }
+        .badge-express { background:rgba(239,68,68,0.15); color:#f87171; }
+        .badge-rapide { background:rgba(245,158,11,0.15); color:#fbbf24; }
+        .badge-normal { background:rgba(34,197,94,0.15); color:#4ade80; }
+
+        /* VETEMENTS */
+        .vetement-row {
+            background:#0f1117; border:1px solid rgba(99,102,241,0.15);
+            border-radius:12px; padding:1.2rem; margin-bottom:1rem; position:relative;
+        }
+        .vetement-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.8rem; }
+        .remove-btn {
+            position:absolute; top:10px; right:10px;
+            background:rgba(239,68,68,0.1); color:#ef4444;
+            border:1px solid rgba(239,68,68,0.3); border-radius:6px;
+            padding:4px 10px; cursor:pointer; font-size:0.78rem;
+            transition:all 0.2s;
+        }
+        .remove-btn:hover { background:rgba(239,68,68,0.25); }
+
+        .btn { padding:10px 20px; border-radius:8px; border:none; cursor:pointer; font-size:0.9rem; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s; }
+        .btn-primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
+        .btn-primary:hover { opacity:0.85; transform:translateY(-1px); }
+        .btn-outline { background:transparent; color:#6366f1; border:1px solid #6366f1; }
+        .btn-outline:hover { background:rgba(99,102,241,0.1); }
+        .btn-back { background:rgba(99,102,241,0.1); color:#94a3b8; border:1px solid rgba(99,102,241,0.2); }
+        .form-actions { display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; }
+        .step-num { width:28px; height:28px; background:#6366f1; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; }
+        .preview-box { background:#0f1117; border-radius:10px; padding:1rem; border:1px solid rgba(99,102,241,0.15); }
+        .preview-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.88rem; }
+        .preview-row:last-child { border:none; font-weight:700; font-size:1rem; color:#6366f1; }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <a class="navbar-brand" href="/web/dashboard">
+        <img src="/image/logo-pressing.webp" alt="Logo">
+        <span>Pressing Community</span>
+    </a>
+    <div class="nav-links">
+        <a href="/web/dashboard" class="nav-link" th:text="#{nav.dashboard}">🏠 Dashboard</a>
+        <a href="/web/utilisateurs" class="nav-link" th:text="#{nav.clients}">👥 Clients</a>
+
+        <!-- Language Switcher -->
+        <div style="display: flex; gap: 5px; margin-left: 1rem; align-items: center; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1rem;">
+            <a href="?lang=fr" class="nav-link" style="padding: 4px 8px; font-size: 0.8rem;" th:styleappend="${#locale.language == 'fr'} ? 'color: #6366f1; background: rgba(99,102,241,0.1);' : ''">FR</a>
+            <a href="?lang=en" class="nav-link" style="padding: 4px 8px; font-size: 0.8rem;" th:styleappend="${#locale.language == 'en'} ? 'color: #6366f1; background: rgba(99,102,241,0.1);' : ''">EN</a>
+        </div>
+    </div>
+</nav>
+
+<div class="main">
+    <div class="page-header">
+        <h1 th:text="#{order.header}">📦 Nouvelle Commande</h1>
+        <p th:text="#{clients.nav.client} + ' : ' + ${utilisateur.nom} + ' (' + ${utilisateur.telephone} + ')'"></p>
+    </div>
+
+    <form id="commandeForm" th:action="'/web/utilisateurs/' + ${utilisateurId} + '/commander'" method="post">
+
+        <!-- TYPE DE SERVICE -->
+        <div class="card">
+            <div class="card-header">
+                <span class="step-num">1</span>
+                <h2 th:text="#{order.service.type}">Type de Service</h2>
+            </div>
+            <div class="card-body">
+                <div class="service-cards">
+                    <div class="service-card">
+                        <input type="radio" name="typeService" id="normal" value="NORMAL" checked>
+                        <label class="service-label" for="normal">
+                            <span class="service-icon">🕐</span>
+                            <div class="service-name">Normal</div>
+                            <div class="service-info" th:text="#{order.service.normal}">Prêt dans 7 jours</div>
+                            <span class="service-badge badge-normal" th:text="#{order.service.no.extra}">Sans majoration</span>
+                        </label>
+                    </div>
+                    <div class="service-card">
+                        <input type="radio" name="typeService" id="rapide" value="RAPIDE">
+                        <label class="service-label" for="rapide">
+                            <span class="service-icon">⚡</span>
+                            <div class="service-name">Rapide</div>
+                            <div class="service-info" th:text="#{order.service.rapide}">Prêt dans 4 jours</div>
+                            <span class="service-badge badge-rapide">+20%</span>
+                        </label>
+                    </div>
+                    <div class="service-card">
+                        <input type="radio" name="typeService" id="express" value="EXPRESS">
+                        <label class="service-label" for="express">
+                            <span class="service-icon">🚀</span>
+                            <div class="service-name">Express</div>
+                            <div class="service-info" th:text="#{order.service.express}">Prêt dans 8 heures</div>
+                            <span class="service-badge badge-express">+50%</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VETEMENTS -->
+        <div class="card">
+            <div class="card-header">
+                <span class="step-num">2</span>
+                <h2 th:text="#{order.articles}">Articles à traiter</h2>
+            </div>
+            <div class="card-body">
+                <div id="vetements-container"></div>
+                <button type="button" class="btn btn-outline" onclick="ajouterVetement()" th:text="#{order.article.add}">
+                    ➕ Ajouter un article
+                </button>
+            </div>
+        </div>
+
+        <!-- RECAPITULATIF -->
+        <div class="card">
+            <div class="card-header">
+                <span class="step-num">3</span>
+                <h2 th:text="#{order.summary}">Récapitulatif</h2>
+            </div>
+            <div class="card-body">
+                <div class="preview-box" id="recap">
+                    <div class="preview-row"><span th:text="#{order.summary.service}">Service sélectionné :</span><span id="recap-service">Normal (+0%)</span></div>
+                    <div class="preview-row"><span th:text="#{commande.articles.count}">Nombre d'articles :</span><span id="recap-articles">0</span></div>
+                    <div class="preview-row"><span th:text="#{order.summary.subtotal}">Sous-total :</span><span id="recap-subtotal">0 FCFA</span></div>
+                    <div class="preview-row"><span th:text="#{order.summary.total}">Total estimé :</span><span id="recap-total">0 FCFA</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="/web/utilisateurs" class="btn btn-back" th:text="#{order.cancel}">← Retour aux clients</a>
+            <button type="submit" class="btn btn-primary" th:text="#{order.submit}">🚀 Valider la commande &amp; Envoyer l'email</button>
+        </div>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    let vetementCount = 0;
+    const labels = {
+        remove: /*[[#{order.article.remove}]]*/ '✕ Retirer',
+        articleNum: /*[[#{order.article.label}]]*/ 'Article',
+        name: /*[[#{order.article.name}]]*/ 'Nom du vêtement',
+        category: /*[[#{order.article.category}]]*/ 'Catégorie',
+        color: /*[[#{order.article.color}]]*/ 'Couleur',
+        price: /*[[#{order.article.price}]]*/ 'Prix unitaire (FCFA)',
+        description: /*[[#{order.article.description}]]*/ 'Description (optionnel)',
+        catHaut: /*[[#{order.article.cat.haut}]]*/ 'Haut (T-shirt, chemise...)',
+        catBas: /*[[#{order.article.cat.bas}]]*/ 'Bas (Pantalon, jupe...)',
+        catRobe: /*[[#{order.article.cat.robe}]]*/ 'Robe',
+        catVeste: /*[[#{order.article.cat.veste}]]*/ 'Veste / Manteau',
+        catLinge: /*[[#{order.article.cat.linge}]]*/ 'Linge de maison',
+        catAutre: /*[[#{order.article.cat.autre}]]*/ 'Autre',
+        colBlanc: /*[[#{order.article.col.blanc}]]*/ 'Blanc',
+        colBleu: /*[[#{order.article.col.bleu}]]*/ 'Bleu',
+        colGris: /*[[#{order.article.col.gris}]]*/ 'Gris',
+        colNoir: /*[[#{order.article.col.noir}]]*/ 'Noir',
+        colRouge: /*[[#{order.article.col.rouge}]]*/ 'Rouge',
+        colAutre: /*[[#{order.article.col.autre}]]*/ 'Autre'
+    };
+
+    function ajouterVetement() {
+        const idx = vetementCount++;
+        const container = document.getElementById('vetements-container');
+        const div = document.createElement('div');
+        div.className = 'vetement-row';
+        div.id = 'vetement-' + idx;
+        div.innerHTML = `
+            <button type="button" class="remove-btn" onclick="supprimerVetement(${idx})">${labels.remove}</button>
+            <div style="font-size:0.85rem;font-weight:700;color:#6366f1;margin-bottom:0.8rem;">${labels.articleNum} #${idx+1}</div>
+            <div class="vetement-grid">
+                <div class="form-group">
+                    <label>${labels.name}</label>
+                    <input type="text" name="vetements[${idx}].nom" placeholder="Ex: T-shirt" required>
+                </div>
+                <div class="form-group">
+                    <label>${labels.category}</label>
+                    <select name="vetements[${idx}].categorie">
+                        <option value="Haut">${labels.catHaut}</option>
+                        <option value="Bas">${labels.catBas}</option>
+                        <option value="Robe">${labels.catRobe}</option>
+                        <option value="Veste">${labels.catVeste}</option>
+                        <option value="Linge">${labels.catLinge}</option>
+                        <option value="Autre">${labels.catAutre}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>${labels.color}</label>
+                    <select name="vetements[${idx}].couleur" onchange="updateRecap()">
+                        <option value="blanc">${labels.colBlanc}</option>
+                        <option value="bleu">${labels.colBleu}</option>
+                        <option value="gris">${labels.colGris}</option>
+                        <option value="noir">${labels.colNoir}</option>
+                        <option value="rouge">${labels.colRouge}</option>
+                        <option value="autre">${labels.colAutre}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>${labels.price}</label>
+                    <input type="number" name="vetements[${idx}].prixUnitaire" placeholder="Ex: 1500" min="0" required onchange="updateRecap()">
+                </div>
+                <div class="form-group">
+                    <label>${labels.image || 'Image (Upload)'}</label>
+                    <input type="file" accept="image/*" onchange="uploadImage(this, ${idx})">
+                    <input type="hidden" name="vetements[${idx}].imageUrl" id="imageUrl-${idx}">
+                    <div id="upload-status-${idx}" style="font-size: 0.7rem; margin-top: 4px;"></div>
+                </div>
+                <div class="form-group">
+                    <label>${labels.description}</label>
+                    <input type="text" name="vetements[${idx}].description" placeholder="...">
+                </div>
+            </div>
+        `;
+        container.appendChild(div);
+        updateRecap();
+    }
+
+    function supprimerVetement(idx) {
+        const el = document.getElementById('vetement-' + idx);
+        if (el) el.remove();
+        updateRecap();
+    }
+
+    function updateRecap() {
+        const rows = document.querySelectorAll('.vetement-row');
+        let subtotal = 0;
+        rows.forEach(row => {
+            const prix = row.querySelector('input[type=number]');
+            if (prix && prix.value) subtotal += parseFloat(prix.value);
+        });
+        const service = document.querySelector('input[name=typeService]:checked').value;
+        let mult = 1, label = 'Normal (+0%)';
+        if (service === 'RAPIDE') { mult = 1.2; label = 'Rapide (+20%)'; }
+        if (service === 'EXPRESS') { mult = 1.5; label = 'Express (+50%)'; }
+        const total = subtotal * mult;
+        document.getElementById('recap-service').textContent = label;
+        document.getElementById('recap-articles').textContent = rows.length;
+        document.getElementById('recap-subtotal').textContent = subtotal.toLocaleString('fr-FR') + ' FCFA';
+        document.getElementById('recap-total').textContent = total.toLocaleString('fr-FR') + ' FCFA';
+    }
+
+    document.querySelectorAll('input[name=typeService]').forEach(r => r.addEventListener('change', updateRecap));
+
+    function uploadImage(input, idx) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const status = document.getElementById(`upload-status-${idx}`);
+        status.textContent = '⏳ Upload en cours...';
+        status.style.color = '#6366f1';
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/api/v1/files/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(url => {
+            document.getElementById(`imageUrl-${idx}`).value = url;
+            status.textContent = '✅ Upload réussi !';
+            status.style.color = '#4ade80';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            status.textContent = '❌ Erreur upload';
+            status.style.color = '#f87171';
+        });
+    }
+
+    // Ajouter un premier vêtement par défaut
+    ajouterVetement();
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+### 1. Créer un Utilisateur (Cameroun +237)
+POST http://localhost:8081/api/v1/pressing/utilisateurs
+Content-Type: application/x-www-form-urlencoded
+
+nom=Jean+Dupont&email=jean@email.com&telephone=%2B237699999999
+
+###
+
+### 2. Créer une Commande EXPRESS (Délai 8h, Majoration 50%)
+POST http://localhost:8081/api/v1/pressing/commandes
+Content-Type: application/x-www-form-urlencoded
+
+typeService=EXPRESS&idUtilisateur=1&vetements[0].nom=Costume+Mariage&vetements[0].categorie=Costume&vetements[0].couleur=Noir&vetements[0].prixUnitaire=20.0
+
+###
+
+### 3. Créer une Commande NORMALE (Délai 7 jours)
+POST http://localhost:8081/api/v1/pressing/commandes
+Content-Type: application/x-www-form-urlencoded
+
+typeService=NORMAL&idUtilisateur=1&vetements[0].nom=Chemise+Bureau&vetements[0].categorie=Chemise&vetements[0].couleur=Bleu&vetements[0].prixUnitaire=5.0
+
+###
+
+### 4. Rechercher par COULEUR (ex: "Noir")
+GET http://localhost:8081/api/v1/pressing/commandes?recherche=Noir&page=0&size=10
+
+###
+
+### 5. Rechercher par NOM de vêtement (ex: "Mariage")
+GET http://localhost:8081/api/v1/pressing/commandes?recherche=Mariage&page=0&size=10
+
+###
+
+### 6. Effectuer un RETRAIT (Valider la livraison)
+# Remplacez {id} par l'ID de la commande (ex: 1)
+POST http://localhost:8081/api/v1/pressing/commandes/1/retrait
+
+###
+
+### 7. Lister toutes les commandes (Vérifier les dates de retrait)
+GET http://localhost:8081/api/v1/pressing/commandes?page=0&size=10

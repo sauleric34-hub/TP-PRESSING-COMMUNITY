@@ -1,0 +1,225 @@
+{
+	"info": {
+		"name": "Pressing API v4.0 (COMPLETE + Visual)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Créer Utilisateur (Cameroun)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{ "key": "nom", "value": "Jean Dupont", "type": "text" },
+						{ "key": "email", "value": "jean@email.com", "type": "text" },
+						{ "key": "telephone", "value": "699999999", "type": "text" }
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/pressing/utilisateurs",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8081",
+					"path": ["api", "v1", "pressing", "utilisateurs"]
+				}
+			}
+		},
+		{
+			"name": "2. Lister les Utilisateurs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/pressing/utilisateurs?page=0&size=10",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8081",
+					"path": ["api", "v1", "pressing", "utilisateurs"],
+					"query": [
+						{ "key": "page", "value": "0" },
+						{ "key": "size", "value": "10" }
+					]
+				}
+			}
+		},
+		{
+			"name": "3. Créer Commande EXPRESS (8h)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{ "key": "typeService", "value": "EXPRESS", "type": "text" },
+						{ "key": "idUtilisateur", "value": "1", "type": "text" },
+						{ "key": "vetements[0].nom", "value": "Costume de Mariage", "type": "text" },
+						{ "key": "vetements[0].categorie", "value": "Costume", "type": "text" },
+						{ "key": "vetements[0].couleur", "value": "Bleu", "type": "text" },
+						{ "key": "vetements[0].prixUnitaire", "value": "20.0", "type": "text" }
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/pressing/commandes",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8081",
+					"path": ["api", "v1", "pressing", "commandes"]
+				}
+			}
+		},
+		{
+			"name": "4. Créer Commande NORMALE (7j)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{ "key": "typeService", "value": "NORMAL", "type": "text" },
+						{ "key": "idUtilisateur", "value": "1", "type": "text" },
+						{ "key": "vetements[0].nom", "value": "T-shirt Gris", "type": "text" },
+						{ "key": "vetements[0].categorie", "value": "T-shirt", "type": "text" },
+						{ "key": "vetements[0].couleur", "value": "Gris", "type": "text" },
+						{ "key": "vetements[0].prixUnitaire", "value": "5.0", "type": "text" }
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/pressing/commandes",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8081",
+					"path": ["api", "v1", "pressing", "commandes"]
+				}
+			}
+		},
+		{
+			"name": "5. Rechercher (Visualizer)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .card { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #ddd; border-radius: 12px; padding: 20px; width: 300px; margin: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s; background: #fff; }",
+							"    .card img { width: 100%; border-radius: 8px; margin-bottom: 15px; background: #eee; min-height: 150px; object-fit: contain; }",
+							"    .title { font-weight: bold; font-size: 1.2em; color: #333; margin-bottom: 5px; }",
+							"    .badge { background: #007bff; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8em; margin-bottom: 10px; display: inline-block; }",
+							"    .price { font-size: 1.1em; color: #28a745; font-weight: bold; }",
+							"    .path { font-size: 0.65em; color: #999; word-break: break-all; margin-top: 10px; background: #f8f9fa; padding: 5px; border-radius: 4px; }",
+							"    .container { display: flex; flex-wrap: wrap; justify-content: center; background: #f4f7f6; padding: 20px; }",
+							"</style>",
+							"<div class=\"container\">",
+							"    {{#each response.content}}",
+							"        {{#each vetements}}",
+							"            <div class=\"card\">",
+							"                <img src=\"{{imageUrl}}\" alt=\"{{nom}}\">",
+							"                <div class=\"title\">{{nom}}</div>",
+							"                <div class=\"badge\">{{couleur}} - {{categorie}}</div>",
+							"                <div class=\"price\">{{prixUnitaire}} FCFA</div>",
+							"                <div class=\"path\">🔗 {{imageUrl}}</div>",
+							"            </div>",
+							"        {{/each}}",
+							"    {{/each}}",
+							"</div>",
+							"`;",
+							"",
+							"pm.visualizer.set(template, {",
+							"    response: pm.response.json()",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/pressing/commandes?recherche=Gris&page=0&size=10",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8081",
+					"path": ["api", "v1", "pressing", "commandes"],
+					"query": [
+						{ "key": "recherche", "value": "Gris" },
+						{ "key": "page", "value": "0" },
+						{ "key": "size", "value": "10" }
+					]
+				}
+			}
+		},
+		{
+			"name": "6. Effectuer un RETRAIT (Livraison)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/pressing/commandes/1/retrait",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8081",
+					"path": ["api", "v1", "pressing", "commandes", "1", "retrait"]
+				}
+			}
+		},
+		{
+			"name": "7. Lister TOUTES les commandes (Visual)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .card { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #ddd; border-radius: 12px; padding: 20px; width: 300px; margin: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s; background: #fff; }",
+							"    .card img { width: 100%; border-radius: 8px; margin-bottom: 15px; background: #eee; min-height: 150px; object-fit: contain; }",
+							"    .title { font-weight: bold; font-size: 1.2em; color: #333; margin-bottom: 5px; }",
+							"    .badge { background: #007bff; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8em; margin-bottom: 10px; display: inline-block; }",
+							"    .price { font-size: 1.1em; color: #28a745; font-weight: bold; }",
+							"    .path { font-size: 0.65em; color: #999; word-break: break-all; margin-top: 10px; background: #f8f9fa; padding: 5px; border-radius: 4px; }",
+							"    .container { display: flex; flex-wrap: wrap; justify-content: center; background: #f4f7f6; padding: 20px; }",
+							"</style>",
+							"<div class=\"container\">",
+							"    {{#each response.content}}",
+							"        {{#each vetements}}",
+							"            <div class=\"card\">",
+							"                <img src=\"{{imageUrl}}\" alt=\"{{nom}}\">",
+							"                <div class=\"title\">{{nom}}</div>",
+							"                <div class=\"badge\">{{couleur}} - {{categorie}}</div>",
+							"                <div class=\"price\">{{prixUnitaire}} FCFA</div>",
+							"                <div class=\"path\">🔗 {{imageUrl}}</div>",
+							"            </div>",
+							"        {{/each}}",
+							"    {{/each}}",
+							"</div>",
+							"`;",
+							"",
+							"pm.visualizer.set(template, {",
+							"    response: pm.response.json()",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/pressing/commandes?page=0&size=20",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8081",
+					"path": ["api", "v1", "pressing", "commandes"],
+					"query": [
+						{ "key": "page", "value": "0" },
+						{ "key": "size", "value": "20" }
+					]
+				}
+			}
+		}
+	]
+}

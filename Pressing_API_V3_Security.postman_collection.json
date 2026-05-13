@@ -1,0 +1,305 @@
+{
+	"info": {
+		"_postman_id": "c57f492d-900e-4d57-9764-e7208a1961d7",
+		"name": "Pressing API v6.0 (SECURE + JWT + FILTERS)",
+		"description": "Collection Sécurisée avec JWT, Spring Security et BCrypt. Port: 9999.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "1. Login (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.environment.set(\"jwt_token\", jsonData.token);",
+									"    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@pressing.com\",\n    \"password\": \"Admin123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9999/api/auth/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9999",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Evaris Fomekong\",\n    \"email\": \"evaris.fomekong@keyce.com\",\n    \"telephone\": \"+237699999999\",\n    \"motDePasse\": \"User123!\",\n    \"roles\": [\"ROLE_USER\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9999/api/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9999",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Utilisateurs",
+			"item": [
+				{
+					"name": "Lister tous les Utilisateurs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9999/api/v1/utilisateurs/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9999",
+							"path": [
+								"api",
+								"v1",
+								"utilisateurs",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrer Utilisateurs par Couleur",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9999/api/v1/utilisateurs?couleur=Bleu",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9999",
+							"path": [
+								"api",
+								"v1",
+								"utilisateurs"
+							],
+							"query": [
+								{
+									"key": "couleur",
+									"value": "Bleu"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrer Utilisateurs par Catégorie",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9999/api/v1/utilisateurs?categorie=Haut",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9999",
+							"path": [
+								"api",
+								"v1",
+								"utilisateurs"
+							],
+							"query": [
+								{
+									"key": "categorie",
+									"value": "Haut"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Commandes",
+			"item": [
+				{
+					"name": "Créer Commande (JSON)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"typeService\": \"EXPRESS\",\n    \"vetements\": [\n        {\n            \"nom\": \"Veste de luxe\",\n            \"categorie\": \"Haut\",\n            \"couleur\": \"Bleu\",\n            \"prixUnitaire\": 5000.0\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9999/api/v1/utilisateurs/1/commandes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9999",
+							"path": [
+								"api",
+								"v1",
+								"utilisateurs",
+								"1",
+								"commandes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lister Commandes (Visualizer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `",
+									"    <style>",
+									"        body { background: #121212; color: #e0e0e0; font-family: 'Outfit', sans-serif; }",
+									"        .order-row { display: flex; border-bottom: 1px solid #333; padding: 10px; align-items: center; }",
+									"        .id { width: 50px; color: #00d2ff; }",
+									"        .client { flex: 1; font-weight: bold; }",
+									"        .garments { flex: 2; display: flex; gap: 5px; }",
+									"        .garment-img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }",
+									"    </style>",
+									"    <h2>Tableau de Bord des Commandes (Sécurisé)</h2>",
+									"    <div class='order-row' style='background: #333; font-weight: bold;'>",
+									"        <div class='id'>ID</div>",
+									"        <div class='client'>Service</div>",
+									"        <div class='garments'>Vêtements</div>",
+									"    </div>",
+									"    {{#each response.content}}",
+									"        <div class='order-row'>",
+									"            <div class='id'>#{{id}}</div>",
+									"            <div class='client'>{{typeService}}</div>",
+									"            <div class='garments'>",
+									"                {{#each vetements}}",
+									"                    <img class='garment-img' src='{{imageUrl}}' title='{{nom}}'>",
+									"                {{/each}}",
+									"            </div>",
+									"        </div>",
+									"    {{/each}}",
+									"`;",
+									"pm.visualizer.set(template, {",
+									"    response: pm.response.json()",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9999/api/v1/commandes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9999",
+							"path": [
+								"api",
+								"v1",
+								"commandes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "jwt_token",
+			"value": ""
+		}
+	]
+}

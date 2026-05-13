@@ -1,0 +1,10 @@
+{
+  "typeService": "RAPIDE",
+  "vetements": [
+    {
+      "nom": "Robe Claire",
+      "categorie": "Robe",
+      "prixUnitaire": 5000
+    }
+  ]
+}
